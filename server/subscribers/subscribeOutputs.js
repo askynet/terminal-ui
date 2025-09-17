@@ -1,6 +1,7 @@
 const Redis = require("ioredis");
 const { getSession } = require("../utils/sessionManager");
 
+
 function subscribeOutputs() {
     const sub = new Redis({ host: "localhost", port: 6379 });
 
