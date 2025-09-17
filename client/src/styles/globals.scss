@@ -1,0 +1,173 @@
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.scss';
+@import 'primeflex/themes/primeone-light.css';
+@import './_variables';
+@import './_typograpgy';
+@import './header';
+@import './sidebar';
+@import './table';
+@import './custom';
+
+:root {
+    --sidebar-bg: #fff;
+    --border-light: #dfe7ef;
+    --hover-bg: #f0f3f8 !important;
+}
+
+html {
+    font-size: 13px;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: #f0f3f8;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.p-button:enabled:focus {
+    box-shadow: none !important;
+}
+
+.text-blue {
+    color: #0068e3 !important;
+}
+
+
+.layout-wrapper {
+    min-height: 100dvh;
+}
+
+.confirm-dialog {
+    .p-dialog-footer {
+        padding: 0.5rem;
+
+        .p-button {
+            padding: 0.6rem 1rem;
+            box-shadow: none !important;
+        }
+    }
+}
+
+.page-container,
+.page-container-projects {
+    height: 100vh;
+    background: #f0f3f8;
+}
+
+.container-box {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.profile-menu-box {
+    margin-left: 10px;
+    max-width: 12rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.p-button {
+    box-shadow: none !important;
+}
+
+.p-button:hover {
+    filter: brightness(97%);
+    box-shadow: rgb(204, 204, 204) 0px 1px 5px 0px;
+}
+
+.crud-panel .p-dialog {
+    width: 100vw !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0px !important;
+    z-index: 11111;
+}
+
+.footer-panel {
+    background-color: #f9fafb;
+    border-top: 1px solid lightgray;
+}
+
+.red,
+.text-red {
+    color: red;
+}
+
+.text-green {
+    color: green;
+}
+
+.text-warn {
+    color: orange;
+}
+
+.p-dialog-header {
+    margin: 0px;
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.p-dialog-content {
+    padding: 1rem;
+}
+
+.p-dialog-footer {
+    margin: 0px;
+    padding: 3px;
+    border-top: 1px solid var(--border-light);
+}
+
+.p-panel-header {
+    border-radius: 0px;
+    padding: 1rem;
+}
+
+.p-datatable-emptymessage {
+    td {
+        text-align: center !important;
+        height: 50px !important;
+    }
+}
+
+.text-link {
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.scroll-box {
+    overflow: auto !important;
+    height: 92vh;
+}
+
+.border-light {
+    border-color: var(--border-light);
+}

@@ -1,0 +1,50 @@
+.sidebar {
+    box-shadow: 0px 0 10px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid var(--border-light);
+    background-color: var(--sidebar-bg);
+
+    .ps-menu-button:hover {
+        span {
+            color: var(--primary-color);
+        }
+
+        .ps-submenu-expand-icon {
+            color: var(--primary-color);
+        }
+    }
+
+    .only-icon-menu .ps-menu-button:hover {
+        .ps-menu-icon {
+            background-color: var(--hover-bg) !important;
+        }
+    }
+
+    .ps-menuitem-root.ps-active span i {
+        color: var(--primary-color);
+    }
+
+    .ps-menuitem-root.only-icon-menu .ps-menu-icon.ps-active {
+        background-color: var(--hover-bg) !important;
+        border-radius: 5px !important;
+        color: var(--primary-color)!important
+    }
+
+    .border-light {
+        border-color: var(--border-light) !important;
+    }
+}
+
+.layout-topbar-logo {
+    height: 55px !important;
+
+    .logo {
+        scale: 0.6;
+        height: 5rem;
+        object-fit: contain;
+    }
+}
+
+.only-icon {
+    font-size: 1.6rem !important;
+    transition: font-size 0.5s ease-in-out;
+}

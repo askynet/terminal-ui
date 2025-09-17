@@ -1,0 +1,13 @@
+[ Next.js (UI) ]
+       │
+       ▼
+[ WebSocket Gateway Service ]
+       │  (Pub/Sub messages)
+       ▼
+[ Message Broker (Redis / NATS / Kafka) ]
+       │
+       ▼
+[ Worker Pool (SSH Workers) ]
+       │
+       ▼
+[ Remote SSH Servers ]

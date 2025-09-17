@@ -1,0 +1,18 @@
+/* General */
+$borderRadius: 4px;
+/* border radius of layout element e.g. card, sidebar */
+$transitionDuration: .2s;
+/* transition duration of layout elements e.g. sidebar, overlay menus */
+
+
+@mixin focused() {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: none;
+}
+
+@mixin focused-inset() {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: none;
+}

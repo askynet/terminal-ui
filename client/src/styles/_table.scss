@@ -1,0 +1,65 @@
+.erp-table {
+
+    .p-datatable-header,
+    .p-treetable-header {
+        background-color: var(--surface-ground);
+    }
+
+    .p-column-filter-menu-button,
+    .p-column-filter-clear-button {
+        display: none !important;
+    }
+
+    .p-icon {
+        width: 0.8rem !important;
+        height: 0.8rem !important;
+    }
+
+    th {
+        padding: 0.8rem 1rem !important;
+        font-size: 11px !important;
+    }
+
+    .p-column-title {
+        text-transform: uppercase !important;
+    }
+
+    .p-paginator {
+        padding: 0px !important;
+    }
+
+    thead tr:nth-of-type(2) th {
+        padding: 5px !important;
+    }
+
+    table tr td:nth-child(1),
+    table tr th:nth-child(1) {
+        padding-left: 1.5rem !important;
+    }
+
+    .p-datatable-tbody>tr>td,
+    .p-treetable-tbody>tr>td {
+        padding: 0.5rem 1rem !important;
+    }
+
+    .p-paginator,
+    .p-datatable-thead,
+    .p-datatable-header {
+        background-color: var(--sidebar-bg);
+        border: none;
+    }
+}
+
+
+.p-datatable {
+
+    .p-dropdown .p-dropdown-label,
+    input.p-column-filter {
+        font-size: .875rem !important;
+        padding: .65625rem !important;
+    }
+
+    .p-dropdown-clear-icon {
+        margin-top: -5px!important;
+    }
+}
