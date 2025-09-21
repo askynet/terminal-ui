@@ -3,7 +3,6 @@
 import { CenterLoader } from "@/components/CenterLoader";
 import TerminalWindow from "@/components/Terminal/TerminalWindow";
 import TopLinerLoader from "@/components/TopLineLoader";
-import AppSidebar from "@/layout/AppSiderbar";
 import { LayoutWrapper } from "@/layout/LayoutWrapper";
 import { focusTab, removeTab, TabItem } from "@/redux/slices/tabSlice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -36,7 +35,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 style={{
                     height: "100vh"
                 }}>
-                <AppSidebar />
                 <div style={{ width: '100vw' }} className={'page-container'}>
                     {children}
                 </div>

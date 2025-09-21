@@ -33,6 +33,7 @@ export interface LayoutContextProps {
     toogleSidebarCollapse: () => void;
     toggleOverlaySidebar: () => void;
     toogleSidebarBroken: (show: boolean) => void;
+    setTheme: (show: any) => void;
 }
 
 export interface MenuContextProps {

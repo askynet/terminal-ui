@@ -26,7 +26,8 @@ const defaultContext: LayoutContextProps = {
     showSidebar: () => { },
     toogleSidebarCollapse: () => { },
     toggleOverlaySidebar: () => { },
-    toogleSidebarBroken: (value: any) => { }
+    toogleSidebarBroken: (value: any) => { },
+    setTheme: (value: any) => { }
 };
 const LayoutContext = createContext(defaultContext);
 
@@ -73,6 +74,10 @@ export const LayoutWrapper = React.memo(({ children }: any) => {
 
     const isDesktop = () => {
         return window.innerWidth > 991;
+    };
+
+    const setTheme = (theme = 'dark') => {
+        return setLayoutState((prevLayoutState: any) => ({ ...prevLayoutState, theme: theme }));
     };
 
     const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] = useEventListener({
@@ -240,7 +245,8 @@ export const LayoutWrapper = React.memo(({ children }: any) => {
         showSidebar,
         toogleSidebarCollapse,
         toogleSidebarBroken,
-        toggleOverlaySidebar
+        toggleOverlaySidebar,
+        setTheme
     };
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;

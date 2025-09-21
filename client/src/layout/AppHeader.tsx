@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { getDisplayName } from '../utils/utils';
 import Link from 'next/link';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { InputText } from 'primereact/inputtext';
 
 interface AppHeaderProps {
     title?: any,
@@ -37,12 +39,9 @@ const useParentRoute = () => {
 const AppHeader = (props: AppHeaderProps) => {
     const { user } = useSelector((state: RootState) => state.auth);
     const { setAlert, signOut } = useAppContext();
-    const { toggleOverlaySidebar } = useLayoutContext();
+    const { toggleOverlaySidebar, setTheme } = useLayoutContext();
     const { layoutState } = useLayoutContext();
 
-    const { parentTitle, parentPath } = useParentRoute();
-
-    const [visible, setVisible] = useState<boolean>(false);
     const menu = useRef<any>(null);
     const items = [
         {
@@ -74,7 +73,6 @@ const AppHeader = (props: AppHeaderProps) => {
     ];
 
     const showProfile = () => {
-        setVisible(true)
     }
 
     const confirmLogout = () => {
@@ -100,8 +98,6 @@ const AppHeader = (props: AppHeaderProps) => {
         }
     }
 
-    const onHide = () => setVisible(false)
-
     const headerTemplate = (<div className='bg-lightgrey p-3'>
         <div className='flex justify-content-between'>
             <div className='flex'>
@@ -121,7 +117,7 @@ const AppHeader = (props: AppHeaderProps) => {
     </div>)
 
     return (<>
-        <header className="crm-header transition-all end-0 position-fixed top-0 overflow-hidden">
+        <header className="border-bottom-1 border-800 transition-all end-0 position-fixed top-0 overflow-hidden">
             <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3 ${props.content == undefined ? 'mobile-header-pad' : ''}`} aria-label="navbar" style={{ height: 55 }}>
                 {
                     props.content !== undefined && props.content
@@ -136,53 +132,26 @@ const AppHeader = (props: AppHeaderProps) => {
                                     </Link>
                                 </>
                             }
-                            {
-                                !layoutState.isSidebar && <>
-                                    <Button icon={'pi pi-bars'} className='p-0' text size={'large'} style={{ color: '#fff' }} onClick={() => toggleOverlaySidebar()}></Button>
-                                </>
-                            }
-                            <Link href={parentPath} className="mb-0 text-white font-bold text-lg">{props.title ? props.title : parentTitle}</Link>
                         </div>
-                        <div className="flex align-items-center">
-                            <div className="header__profile flex align-items-center">
-                                <div className="dropdown d-inline-block">
-                                    <div className="header__profile--btn dropdowntoggle cursor-pointer flex align-items-center gap-2" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" onClick={avatrClick} >
-                                        <Avatar label={getDisplayName(user)[0]} style={{ backgroundColor: '#9c27b0', color: '#ffffff' }} shape="circle" />
-                                    </div>
-                                    <Menu model={items} popup ref={menu} style={{ marginTop: 15 }} />
-                                </div>
-                            </div>
-                        </div>
+                        <ul className="flex list-none m-0 p-0 gap-2 align-items-center">
+                            <li>
+                                <span onClick={() => setTheme(layoutState.theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 text-link px-link border-1 border-500 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary">
+                                    <i className={`pi ${layoutState.theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
+                                </span>
+                            </li>
+                            <li>
+                                <span
+                                    onClick={() => signOut()}
+                                    className="flex flex-shrink-0 text-link px-link border-1 border-500 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
+                                >
+                                    <i className="pi pi-sign-out text-100" />
+                                </span>
+                            </li>
+                        </ul>
                     </>
                 }
             </nav>
         </header>
-        <Dialog
-            visible={visible}
-            header={headerTemplate}
-            footer={<></>}
-            resizable={false}
-            draggable={false}
-            closable
-            position={'right'}
-            style={{ width: '40rem', height: '100dvh', maxHeight: '100dvh', margin: 0, borderRadius: 0 }}
-            headerStyle={{ borderBottom: '1px solid lightgrey' }}
-            onHide={onHide}
-            className='profile-card'
-        >
-            <div className="m-0">
-                <div className='mt-3'>
-                    <div className="field">
-                        <small>Name</small>
-                        <p className='font-bold'>{getDisplayName(user)}</p>
-                    </div>
-                    <div className="field">
-                        <small>Email</small>
-                        <p className='font-bold'>{get(user, 'email')}</p>
-                    </div>
-                </div>
-            </div>
-        </Dialog>
     </>)
 };
 

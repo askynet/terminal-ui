@@ -1,4 +1,4 @@
-@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import 'primereact/resources/themes/lara-dark-green/theme.css';
 @import 'primereact/resources/primereact.min.css';
 @import 'primeicons/primeicons.css';
 @import 'primeflex/primeflex.scss';
@@ -17,13 +17,13 @@
 }
 
 html {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 body {
     font-family: var(--font-family);
     color: var(--text-color);
-    background-color: #f0f3f8;
+    background-color: var(--surface-ground);
     margin: 0;
     padding: 0;
     min-height: 100%;
@@ -63,7 +63,7 @@ a {
 .page-container,
 .page-container-projects {
     height: 100vh;
-    background: #f0f3f8;
+    background: var(--surface-ground);
 }
 
 .container-box {

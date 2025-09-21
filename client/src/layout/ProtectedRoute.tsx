@@ -8,7 +8,7 @@ type ProtectedRouteProps = {
     children: React.ReactNode;
 };
 
-const authRoutes = ['/login', '/signup', '/reset-password', '/forgot-password', '/delete-account', '/error', '/not-found'];
+const authRoutes = ['/login', '/error', '/not-found'];
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const { isLoggedIn, user, authToken } = useSelector((state: RootState) => state.auth);
@@ -31,7 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             }
             navigate.push(`/login${returnUrl != '/' ? `?returnUrl=${returnUrl}` : ''}`);
         }
-        else if (authToken && isValid && authRoutes.includes(pathname) && !['/delete-account'].includes(pathname)) {
+        else if (authToken && isValid && authRoutes.includes(pathname)) {
             const returnUrl = searchParams.get('returnUrl') || `/`;
             navigate.push(returnUrl);
         }
