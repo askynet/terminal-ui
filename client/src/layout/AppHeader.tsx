@@ -14,6 +14,7 @@ import { getDisplayName } from '../utils/utils';
 import Link from 'next/link';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { InputText } from 'primereact/inputtext';
+import TabsComponent from '@/components/TabsComponent';
 
 interface AppHeaderProps {
     title?: any,
@@ -60,7 +61,7 @@ const AppHeader = (props: AppHeaderProps) => {
 
     return (<>
         <header className="border-bottom-1 transition-all end-0 position-fixed top-0 overflow-hidden" style={{ borderColor: "var(--surface-border)"}}>
-            <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3 ${props.content == undefined ? 'mobile-header-pad' : ''}`} aria-label="navbar" style={{ height: 55 }}>
+            <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3 ${props.content == undefined ? 'mobile-header-pad' : ''}`} aria-label="navbar" style={{ height: 45 }}>
                 {
                     props.content !== undefined && props.content
                 }
@@ -74,10 +75,11 @@ const AppHeader = (props: AppHeaderProps) => {
                                     </Link>
                                 </>
                             }
+                            <TabsComponent />
                         </div>
                         <ul className="flex list-none m-0 p-0 gap-2 align-items-center">
                             <li>
-                                <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--menu-border-color)' }}>
+                                <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--surface-100)' }}>
                                     <i className={`pi ${theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
                                 </span>
                             </li>
@@ -85,7 +87,7 @@ const AppHeader = (props: AppHeaderProps) => {
                                 <span
                                     onClick={() => confirmLogout()}
                                     className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
-                                    style={{ borderColor: 'var(--menu-border-color)' }}
+                                    style={{ borderColor: 'var(--surface-100)' }}
                                 >
                                     <i className="pi pi-sign-out text-100" />
                                 </span>

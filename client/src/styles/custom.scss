@@ -7,3 +7,15 @@
 .p-tabview-nav li .p-tabview-nav-link {
     height: 55px !important;
 }
+
+.plus-terminal {
+    background-color: var(--surface-200);
+}
+
+.tab-item {
+    background-color: var(--surface-200);
+}
+
+.transition-all {
+  transition: all 0.3s ease; /* width, height, padding, etc. */
+}

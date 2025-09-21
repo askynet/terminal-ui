@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Dialog } from 'primereact/dialog';
-import { LayoutContext } from '../layout/context/layoutcontext';
 import { Button } from 'primereact/button';
 import { ACTIONS } from '../config/constant';
 import { useLayoutContext } from '../layout/LayoutWrapper';
@@ -56,7 +55,7 @@ const RightSidePanel = ({ title = '', isVisible, action = ACTIONS.VIEW, isLoadin
                 draggable={false}
                 position={layoutState.isMobile ? 'center' : 'right'}
                 style={{ width: layoutState.isMobile ? '95vw' : width, height: layoutState.isMobile ? '95vh' : '100dvh', maxHeight: '100dvh', margin: 0, borderRadius: 0 }}
-                headerStyle={{ borderBottom: '1px solid var(--border-light)' }}
+                headerStyle={{ borderBottom: '1px solid var(--surface-100)' }}
                 onHide={closeIcon}
                 className='crud-panel'
             >

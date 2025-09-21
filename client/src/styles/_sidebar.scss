@@ -1,6 +1,6 @@
 .sidebar {
     box-shadow: 0px 0 10px rgba(0, 0, 0, 0.3);
-    border-right: 1px solid var(--border-light);
+    border-right: 1px solid var(--surface-100);
     background-color: var(--sidebar-bg);
 
     .ps-menu-button:hover {
@@ -30,7 +30,7 @@
     }
 
     .border-light {
-        border-color: var(--border-light) !important;
+        border-color: var(--surface-100) !important;
     }
 }
 

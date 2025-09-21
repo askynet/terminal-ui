@@ -12,7 +12,12 @@ interface TabState {
 
 const initialState: TabState = {
     focusedTab: null,
-    tabs: []
+    tabs: [
+        {
+            tabId: 'default',
+            title: 'New Tab'
+        }
+    ]
 };
 
 const tabSlice = createSlice({
@@ -23,7 +28,10 @@ const tabSlice = createSlice({
             state.tabs = action.payload;
         },
         clearTabs(state) {
-            state.tabs = [];
+            state.tabs = [{
+                tabId: 'default',
+                title: 'New Tab'
+            }];
         },
         addTab(state, action: PayloadAction<TabItem>) {
             state.tabs.push(action.payload);
@@ -31,7 +39,7 @@ const tabSlice = createSlice({
         removeTab(state, action: PayloadAction<any>) {
             const tabIndex = state.tabs.findIndex(tab => tab.tabId == action.payload);
             // If the removed tab was focused, reset focus
-            if (state.focusedTab === (tabIndex +1)) {
+            if (state.focusedTab === (tabIndex + 1)) {
                 state.focusedTab = tabIndex;
             }
             state.tabs = state.tabs.filter(tab => tab.tabId !== action.payload);

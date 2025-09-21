@@ -131,7 +131,7 @@ a {
 .p-dialog-header {
     margin: 0px;
     padding: 0.8rem;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--surface-100);
 }
 
 .p-dialog-content {
@@ -141,7 +141,7 @@ a {
 .p-dialog-footer {
     margin: 0px;
     padding: 3px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid var(--surface-100);
 }
 
 .p-panel-header {
@@ -167,5 +167,5 @@ a {
 }
 
 .border-light {
-    border-color: var(--border-light);
+    border-color: var(--surface-100);
 }
