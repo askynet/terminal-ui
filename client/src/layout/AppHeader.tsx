@@ -60,41 +60,34 @@ const AppHeader = (props: AppHeaderProps) => {
     }
 
     return (<>
-        <header className="border-bottom-1 transition-all end-0 position-fixed top-0 overflow-hidden" style={{ borderColor: "var(--surface-border)"}}>
-            <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3 ${props.content == undefined ? 'mobile-header-pad' : ''}`} aria-label="navbar" style={{ height: 45 }}>
-                {
-                    props.content !== undefined && props.content
-                }
-                {
-                    props.content == undefined && <>
-                        <div className="dashboard-title flex align-items-center">
-                            {
-                                ((layoutState.isSidebarBroken && props.isLogo) || props.isLogo) && <>
-                                    <Link href={'/'} className='mr-2'>
-                                        <img src='/logo.png' style={{ height: '2rem' }} />
-                                    </Link>
-                                </>
-                            }
-                            <TabsComponent />
-                        </div>
-                        <ul className="flex list-none m-0 p-0 gap-2 align-items-center">
-                            <li>
-                                <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--surface-100)' }}>
-                                    <i className={`pi ${theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
-                                </span>
-                            </li>
-                            <li>
-                                <span
-                                    onClick={() => confirmLogout()}
-                                    className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
-                                    style={{ borderColor: 'var(--surface-100)' }}
-                                >
-                                    <i className="pi pi-sign-out text-100" />
-                                </span>
-                            </li>
-                        </ul>
-                    </>
-                }
+        <header className="border-bottom-1 transition-all end-0 position-fixed top-0 overflow-hidden" style={{ borderColor: "var(--surface-border)" }}>
+            <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3`} aria-label="navbar" style={{ height: 45 }}>
+                <div className="dashboard-title flex align-items-center">
+                    {
+                        ((layoutState.isSidebarBroken && props.isLogo) || props.isLogo) && <>
+                            <Link href={'/'} className='flex align-items-center gap-2 mr-2'>
+                                <img src='/logo2.png' style={{ height: '2rem' }} /> |
+                            </Link>
+                        </>
+                    }
+                    <TabsComponent />
+                </div>
+                <ul className="flex list-none m-0 p-0 gap-2 align-items-center">
+                    <li>
+                        <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--surface-100)' }}>
+                            <i className={`pi ${theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
+                        </span>
+                    </li>
+                    <li>
+                        <span
+                            onClick={() => confirmLogout()}
+                            className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
+                            style={{ borderColor: 'var(--surface-100)' }}
+                        >
+                            <i className="pi pi-sign-out text-100" />
+                        </span>
+                    </li>
+                </ul>
             </nav>
         </header>
     </>)

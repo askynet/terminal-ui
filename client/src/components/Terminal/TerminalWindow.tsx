@@ -7,8 +7,10 @@ import "xterm/css/xterm.css";
 import { v4 as uuidv4 } from "uuid";
 import { getSocket } from "@/config/socket";
 import { User } from "@/types";
+import { useAppContext } from "@/layout/AppWrapper";
 
 const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean, user?: User }) => {
+  const { theme } = useAppContext();
   const terminalRef = useRef<HTMLDivElement>(null);
   const termInstance = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -28,7 +30,7 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
   useEffect(() => {
     if (!termInstance.current && terminalRef.current) {
       const term = new Terminal({
-        theme: { background: "#1e1e1e", foreground: "#ffffff" },
+        theme: { background: theme === 'light' ? '#f9fafb' : "#111827", foreground: "#00e08f" },
         fontSize: 15,
         allowProposedApi: true,
         cursorBlink: true,
@@ -121,6 +123,12 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
     }
   }, []);
 
+  useEffect(() => {
+    if (termInstance && termInstance.current && termInstance.current.options) {
+      termInstance.current.options.theme = { background: theme === 'light' ? '#f9fafb' : "#111827", foreground: "#00e08f" };
+    }
+  }, [theme])
+
   // Refocus terminal when active
   useEffect(() => {
     if (isActive && termInstance.current) {
@@ -138,7 +146,7 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
           sessionId: sessionIdRef.current,
           cols: termInstance.current.cols,
           rows: termInstance.current.rows,
-          term: "xterm-256color",
+          term: "xterm-color",
         });
         hasConnectedRef.current = true;
       }
@@ -164,15 +172,8 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
     };
   }, []);
 
-  return <div>
-    <div key={`terminal${id}`} ref={terminalRef} style={{ height: "80vh", background: "#1e1e1e" }} />
-    <div style={{ height: '20vh' }}>
-      {
-        user && <div className="mt-5 mx-3">
-          <p className="text-2xl text-black font-bold">{user.displayName} ({user.userRole})</p>
-        </div>
-      }
-    </div>
+  return <div style={{ visibility: isActive ? 'visible' : 'hidden', height: isActive ? '100vh' : 0, padding: isActive ? 10 : 0 }}>
+    <div key={`terminal${id}`} ref={terminalRef} style={{ height: "90vh" }} />
   </div>;
 };
 
