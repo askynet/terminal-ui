@@ -28,7 +28,7 @@ const DARK = "/themes/lara-dark-green/theme.css";
 export const AppWrapper = React.memo(({ children }: any) => {
     const [isLoading, setLoading] = useState(false);
     const [isScroll, setScroll] = useState(false);
-    const [theme, setTheme] = useState<"light" | "dark">("dark");
+    const [theme, setTheme] = useState<any>(localStorage.getItem('pr-theme-mode') || 'dark');
 
     const toastRef = useRef<any>(null);
 
@@ -45,7 +45,7 @@ export const AppWrapper = React.memo(({ children }: any) => {
 
     useEffect(() => {
         applyTheme(theme === "light" ? LIGHT : DARK);
-        localStorage.setItem("pr-theme-mode", theme);
+        localStorage.setItem('pr-theme-mode', theme)
     }, [theme]);
 
     useEffect(() => {
