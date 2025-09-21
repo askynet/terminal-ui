@@ -38,42 +38,8 @@ const useParentRoute = () => {
 
 const AppHeader = (props: AppHeaderProps) => {
     const { user } = useSelector((state: RootState) => state.auth);
-    const { setAlert, signOut } = useAppContext();
-    const { toggleOverlaySidebar, setTheme } = useLayoutContext();
+    const { setAlert, signOut, theme, setTheme } = useAppContext();
     const { layoutState } = useLayoutContext();
-
-    const menu = useRef<any>(null);
-    const items = [
-        {
-            template: (item: any, options: any) => {
-                return (
-                    <div className="p-menuitem cursor-pointer " style={{ alignItems: 'center', padding: 10 }}>
-                        <div className='profile-menu-box' style={{ marginLeft: 10 }}>
-                            <span style={{ fontWeight: 'bold' }}>{getDisplayName(user)}</span>
-                            <br></br>
-                            <span style={{ color: 'gray' }}>{get(user, 'email')}</span>
-                        </div>
-                    </div>
-                );
-            }
-        },
-        {
-            label: 'Profile',
-            icon: 'pi pi-user',
-            command: () => showProfile()
-        },
-        {
-            separator: true
-        },
-        {
-            label: 'Logout',
-            icon: 'pi pi-sign-out',
-            command: () => confirmLogout()
-        }
-    ];
-
-    const showProfile = () => {
-    }
 
     const confirmLogout = () => {
         confirmDialog({
@@ -92,32 +58,8 @@ const AppHeader = (props: AppHeaderProps) => {
         signOut(true);
     }
 
-    const avatrClick = (e: any) => {
-        if (menu) {
-            menu.current.toggle(e)
-        }
-    }
-
-    const headerTemplate = (<div className='bg-lightgrey p-3'>
-        <div className='flex justify-content-between'>
-            <div className='flex'>
-                <div className='mr-3'>
-                    {get(user, 'profle') && <Avatar image={get(user, 'profle')} style={{ width: '4rem', height: '4rem' }} />}
-                    {!get(user, 'profle') && <Avatar label={getDisplayName(user)[0]} size="xlarge" style={{ width: '4rem', height: '4rem' }} />}
-                </div>
-                <div>
-                    <p className='m-0'><strong>{getDisplayName(user)}</strong></p>
-                    <p>{get(user, 'email', '')}</p>
-                    <div className='flex gap-3'>
-                        <Button label='Logout' size={'small'} severity={'danger'} outlined onClick={() => confirmLogout()}></Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>)
-
     return (<>
-        <header className="border-bottom-1 border-800 transition-all end-0 position-fixed top-0 overflow-hidden">
+        <header className="border-bottom-1 transition-all end-0 position-fixed top-0 overflow-hidden" style={{ borderColor: "var(--surface-border)"}}>
             <nav className={`flex justify-content-between align-items-center navbar navbar-expand-xl px-3 ${props.content == undefined ? 'mobile-header-pad' : ''}`} aria-label="navbar" style={{ height: 55 }}>
                 {
                     props.content !== undefined && props.content
@@ -135,14 +77,15 @@ const AppHeader = (props: AppHeaderProps) => {
                         </div>
                         <ul className="flex list-none m-0 p-0 gap-2 align-items-center">
                             <li>
-                                <span onClick={() => setTheme(layoutState.theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 text-link px-link border-1 border-500 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary">
-                                    <i className={`pi ${layoutState.theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
+                                <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--menu-border-color)' }}>
+                                    <i className={`pi ${theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
                                 </span>
                             </li>
                             <li>
                                 <span
-                                    onClick={() => signOut()}
-                                    className="flex flex-shrink-0 text-link px-link border-1 border-500 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
+                                    onClick={() => confirmLogout()}
+                                    className="flex flex-shrink-0 cursor-pointer px-link border-1 border-solid w-2rem h-2rem border-round  align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary"
+                                    style={{ borderColor: 'var(--menu-border-color)' }}
                                 >
                                     <i className="pi pi-sign-out text-100" />
                                 </span>

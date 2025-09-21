@@ -16,13 +16,19 @@ const defaultContext: AppContextType = {
     setAlert: (messgae: string, type?: string) => { },
     isScroll: true,
     setScroll: () => { },
+    theme: 'dark',
+    setTheme: (theme: any) => { },
     permissions: []
 };
 const AppContext = createContext(defaultContext);
 
+const LIGHT = "/themes/lara-light-green/theme.css";
+const DARK = "/themes/lara-dark-green/theme.css";
+
 export const AppWrapper = React.memo(({ children }: any) => {
     const [isLoading, setLoading] = useState(false);
     const [isScroll, setScroll] = useState(false);
+    const [theme, setTheme] = useState<"light" | "dark">("dark");
 
     const toastRef = useRef<any>(null);
 
@@ -38,6 +44,14 @@ export const AppWrapper = React.memo(({ children }: any) => {
     }, [authRefreshToken])
 
     useEffect(() => {
+        applyTheme(theme === "light" ? LIGHT : DARK);
+        localStorage.setItem("pr-theme-mode", theme);
+    }, [theme]);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("pr-theme-mode");
+        if (saved === "dark" || saved === "light") setTheme(saved);
+
         eventEmitter.on('signOut', (data: any) => {
             signOut();
             setAlert('Session expired')
@@ -60,6 +74,26 @@ export const AppWrapper = React.memo(({ children }: any) => {
         toastRef.current.show({ severity: type, detail: message || (type == 'error' ? 'Failed' : ''), life: 3000 });
     }
 
+    const applyTheme = (href: string) => {
+        if (typeof document === "undefined") return;
+        let link = document.getElementById("theme-link") as HTMLLinkElement | null;
+        let linkRef = document.getElementById("theme-ref") as HTMLLinkElement | null;
+        if (!link) {
+            link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.id = "theme-link";
+            document.head.appendChild(link);
+        }
+        if (!linkRef) {
+            linkRef = document.createElement("link");
+            linkRef.rel = "stylesheet";
+            linkRef.id = "theme-ref";
+            document.head.appendChild(linkRef);
+        }
+        link.href = href;
+        linkRef.href = `/themes/primeone-${theme}.css`
+    };
+
     return (
         <AppContext.Provider value={{
             isLoading, setLoading,
@@ -67,7 +101,9 @@ export const AppWrapper = React.memo(({ children }: any) => {
             setAlert,
             isScroll,
             setScroll,
-            permissions
+            permissions,
+            theme,
+            setTheme
         }}>
             <Toast className='erp-alert' position="top-center" ref={toastRef} style={{ zIndex: 9999999 }} />
             <ConfirmDialog />

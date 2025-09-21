@@ -23,7 +23,7 @@ interface User {
 }
 
 const LoginPage = () => {
-    const { isLoading, setAlert, setLoading } = useAppContext();
+    const { isLoading, setAlert, setLoading, theme, setTheme } = useAppContext();
     const [email, setEmail] = useState('exuud@admin.com');
     const [password, setPassword] = useState('exuud123');
     const { layoutState } = useLayoutContext();
@@ -77,6 +77,11 @@ const LoginPage = () => {
 
     return (
         <div>
+            <div className='fixed mt-2 right-0 mr-2'>
+                <span onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="flex flex-shrink-0 cursor-pointer px-link border-1 border-round w-2rem h-2rem align-items-center justify-content-center transition-all transition-duration-300 hover:border-primary" style={{ borderColor: 'var(--menu-border-color)'}}>
+                    <i className={`pi ${theme === 'dark' ? 'pi-sun' : 'pi-moon'} text-100`} />
+                </span>
+            </div>
             <div className="flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
                 <div className="flex flex-column align-items-center justify-content-center">
                     <img src="/next.svg" alt="logo" className="mb-5 w-6rem flex-shrink-0 text-color" />

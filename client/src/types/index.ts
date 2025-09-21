@@ -33,7 +33,6 @@ export interface LayoutContextProps {
     toogleSidebarCollapse: () => void;
     toggleOverlaySidebar: () => void;
     toogleSidebarBroken: (show: boolean) => void;
-    setTheme: (show: any) => void;
 }
 
 export interface MenuContextProps {
@@ -143,6 +142,8 @@ export type AppContextType = {
     setAlert: (message: string, type?: string) => void;
     isScroll: boolean;
     setScroll: (loading: boolean) => void;
+    theme: any,
+    setTheme: (theme: any) => void;
     permissions: any[]
 };
 

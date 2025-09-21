@@ -1,0 +1,13 @@
+:root {
+  --p-text-color: #495057;
+  --p-text-muted-color: #6c757d;
+  --p-content-border-radius: 6px;
+  --p-primary-color: #34d399;
+  --p-primary-contrast-color: #ffffff;
+  --body-bg: #f6f7f9;
+  --menu-bg: #f6f7f9;
+  --menu-border-color: #e6e6e6;
+  --menu-icon-hover-filter: invert(50%) sepia(31%) saturate(7070%) hue-rotate(179deg) brightness(105%) contrast(106%);
+  --topbar-bg: rgb(246, 247, 249 / 80%);
+  color-scheme: light;
+}
