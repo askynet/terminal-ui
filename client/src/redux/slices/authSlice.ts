@@ -1,52 +1,39 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
-    isLoggedIn?: boolean;
-    user: any;
-    authToken: any;
-    authRefreshToken: any;
-    permissions: any[]
+export interface TernimalConfig {
+    lanId: any;
+    passwordToken: any;
+    isLoggedIn: boolean;
 }
 
-const initialState: AuthState = {
-    isLoggedIn: false,
-    user: undefined,
-    authToken: undefined,
-    authRefreshToken: undefined,
-    permissions: []
+const initialState: TernimalConfig = {
+    lanId: null,
+    passwordToken: null,
+    isLoggedIn: false
 };
 
-const authSlice = createSlice({
-    name: 'auth',
+const terminalSlice = createSlice({
+    name: 'terminalSlice',
     initialState,
     reducers: {
-        login(state, action: PayloadAction<any>) {
-            state.isLoggedIn = true;
-            state.user = action.payload.user;
-            state.authToken = action.payload.token;
-            state.authRefreshToken = action.payload.refreshToken;
+        setTerminalConfig(state, action: PayloadAction<TernimalConfig>) {
+            state = {
+                ...action.payload,
+                isLoggedIn: true
+            };
+            return state;
         },
-        logout(state) {
-            state.isLoggedIn = false;
-            state.user = null;
-            state.authToken = null;
-            state.authRefreshToken = null;
-            state.permissions = [];
-        },
-        setPermissions(state, action: PayloadAction<string[]>) {
-            state.permissions = action.payload;
-        },
-        clearPermissions(state) {
-            state.permissions = [];
-        },
-        setAuthToken(state, action: PayloadAction<string>) {
-            state.authToken = action.payload;
-        },
-        setAuthRefreshToken(state, action: PayloadAction<string>) {
-            state.authRefreshToken = action.payload;
-        },
+        clearTerminalConfig(state) {
+            state = {
+                ...state,
+                passwordToken: null,
+                isLoggedIn: false
+            };
+            return state;
+        }
     },
 });
 
-export const { login, logout, setPermissions, clearPermissions, setAuthToken, setAuthRefreshToken } = authSlice.actions;
-export default authSlice.reducer;
+export const { setTerminalConfig, clearTerminalConfig } = terminalSlice.actions;
+export default terminalSlice.reducer;
+

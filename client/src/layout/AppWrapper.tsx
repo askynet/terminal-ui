@@ -6,8 +6,8 @@ import eventEmitter from '../api/event';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
-import { logout, setAuthToken } from '../redux/slices/authSlice';
 import { CONFIG } from '../config/config';
+import { clearTerminalConfig } from '@/redux/slices/authSlice';
 
 const defaultContext: AppContextType = {
     isLoading: true,
@@ -18,30 +18,30 @@ const defaultContext: AppContextType = {
     setScroll: () => { },
     theme: 'dark',
     setTheme: (theme: any) => { },
-    permissions: []
 };
 const AppContext = createContext(defaultContext);
 
+
 const LIGHT = "/themes/lara-light-green/theme.css";
 const DARK = "/themes/lara-dark-green/theme.css";
+
 
 export const AppWrapper = React.memo(({ children }: any) => {
     const [isLoading, setLoading] = useState(false);
     const [isScroll, setScroll] = useState(false);
     const [theme, setTheme] = useState<any>(localStorage.getItem('pr-theme-mode') || 'dark');
 
+
     const toastRef = useRef<any>(null);
 
+
     const dispatch = useDispatch<AppDispatch>();
-    const { isLoggedIn, authToken, authRefreshToken, user, permissions } = useSelector((state: RootState) => state.auth);
+    const { passwordToken } = useSelector((state: RootState) => state.auth);
+
 
     useEffect(() => {
-        localStorage.setItem(CONFIG.AUTH_USER_TOKEN, authToken)
-    }, [authToken])
-
-    useEffect(() => {
-        localStorage.setItem(CONFIG.AUTH_USER_REFRESH_TOKEN, authRefreshToken)
-    }, [authRefreshToken])
+        localStorage.setItem(CONFIG.AUTH_USER_TOKEN, passwordToken)
+    }, [passwordToken])
 
     useEffect(() => {
         applyTheme(theme === "light" ? LIGHT : DARK);
@@ -56,15 +56,10 @@ export const AppWrapper = React.memo(({ children }: any) => {
             signOut();
             setAlert('Session expired')
         });
-        eventEmitter.on('token', (data: any) => {
-            if (authToken != data) {
-                dispatch(setAuthToken(data))
-            }
-        });
     }, [])
 
     const signOut = async (isManual = false) => {
-        dispatch(logout())
+        dispatch(clearTerminalConfig())
     }
 
     const setAlert = (message: string, type = 'error') => {
@@ -101,7 +96,6 @@ export const AppWrapper = React.memo(({ children }: any) => {
             setAlert,
             isScroll,
             setScroll,
-            permissions,
             theme,
             setTheme
         }}>

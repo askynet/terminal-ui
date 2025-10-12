@@ -16,9 +16,14 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off",
       "react/display-name": "off",
       "@typescript-eslint/no-unused-vars": "off",
-      "react-hooks/exhaustive-deps": "off"
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@next/next/no-css-tags": "off",
+      "@next/next/no-img-element": "off",
+      "jsx-a11y/alt-text": "off" 
     },
   }
 ];
+
 
 export default eslintConfig;

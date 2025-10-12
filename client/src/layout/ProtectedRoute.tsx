@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { isTokenValid } from "../utils/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type ProtectedRouteProps = {
@@ -11,14 +10,13 @@ type ProtectedRouteProps = {
 const authRoutes = ['/login', '/error', '/not-found'];
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { isLoggedIn, user, authToken } = useSelector((state: RootState) => state.auth);
+    const { passwordToken } = useSelector((state: RootState) => state.auth);
     const searchParams = useSearchParams();
     const navigate = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
-        const isValid = isTokenValid(authToken);
-        if (!isValid) {
+        if (!passwordToken) {
             if (authRoutes.includes(pathname)) {
                 return;
             }
@@ -31,12 +29,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             }
             navigate.push(`/login${returnUrl != '/' ? `?returnUrl=${returnUrl}` : ''}`);
         }
-        else if (authToken && isValid && authRoutes.includes(pathname)) {
+        else if (passwordToken && authRoutes.includes(pathname)) {
             const returnUrl = searchParams.get('returnUrl') || `/`;
             navigate.push(returnUrl);
         }
-    }, [authToken])
-
+    }, [passwordToken])
 
     return <>{children}</>;
 };

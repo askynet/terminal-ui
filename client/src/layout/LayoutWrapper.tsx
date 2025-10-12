@@ -1,17 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { LayoutContextProps, LayoutState } from '../types';
 import { useEventListener } from 'primereact/hooks';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useTokenExpiryAlert } from '../hooks/useTokenExpiryAlert';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
-import { Button } from 'primereact/button';
-import axios from 'axios';
-import { setAuthRefreshToken, setAuthToken } from '../redux/slices/authSlice';
-import { CONFIG } from '../config/config';
-import { useAppContext } from './AppWrapper';
-import { confirmDialog } from 'primereact/confirmdialog';
 
 const defaultContext: LayoutContextProps = {
     layoutState: {
@@ -31,13 +22,7 @@ const defaultContext: LayoutContextProps = {
 const LayoutContext = createContext(defaultContext);
 
 export const LayoutWrapper = React.memo(({ children }: any) => {
-    const dialogRef = useRef<any>(null);
     const [layoutState, setLayoutState] = useState<LayoutState>(defaultContext.layoutState);
-
-    const { setAlert, signOut } = useAppContext();
-
-    const dispatch = useDispatch<AppDispatch>();
-    const { isLoggedIn, authToken, authRefreshToken, user, permissions } = useSelector((state: RootState) => state.auth);
 
     const onMenuToggle = () => {
         if (isDesktop()) {
@@ -150,88 +135,6 @@ export const LayoutWrapper = React.memo(({ children }: any) => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-
-    const hideExpiryDialog = () => {
-        if (dialogRef.current) {
-            dialogRef.current.hide();
-        }
-    }
-
-    const refreshAuthToken = async () => {
-        try {
-            const refreshToken = authRefreshToken;
-            if (!refreshToken) {
-                throw new Error('No refresh token available');
-            }
-
-            // Make the refresh token request
-            const response = await axios.post(`${CONFIG.BASE_URL}/auth/refresh-token`, {
-                refreshToken,
-            })
-
-            const { data } = response.data;
-
-            if (data.token) {
-                dispatch(setAuthToken((data.token)))
-            }
-            if (data.refreshToken) {
-                dispatch(setAuthRefreshToken(data.refreshToken))
-            }
-        } catch (error: any) {
-            setAlert(error.message)
-        }
-    }
-
-    const footer = (callback: any) => (
-        <div className="flex justify-content-end gap-1 mt-1 mb-1">
-            <Button label="Logout" icon="pi pi-sign-out" severity="danger" size="small" onClick={() => {
-                signOut()
-                callback.reject();
-            }} />
-            <Button label="Refresh" icon="pi pi-refresh" size="small" onClick={() => {
-                refreshAuthToken()
-                callback.accept();
-            }} />
-        </div>
-    );
-
-    const showTokenExpiryAlert = async (forceLogout?: boolean) => {
-        if (forceLogout) {
-            console.log('force logout')
-            await hideExpiryDialog();
-            signOut();
-            return;
-        }
-        if (!isLoggedIn || !user) {
-            hideExpiryDialog();
-            return;
-        }
-        dialogRef.current = confirmDialog({
-            message: `Your session is about to expire. Click Refresh to stay connected or Logout.`,
-            header: "Session Expiring",
-            icon: "pi pi-exclamation-triangle text-red",
-            position: 'top-right',
-            style: { width: '30vw' },
-            breakpoints: { '1100px': '30vw', '960px': '100vw' },
-            footer: footer
-        });
-    };
-    // 2 min before expiry
-    useTokenExpiryAlert(showTokenExpiryAlert, 2 * 60 * 1000);
-
-    // useEffect(() => {
-    //     localStorage.setItem('crmColorScheme', layoutState.theme);
-    //     const newTheme = layoutState.theme === "dark" ? "lara-dark-indigo" : "lara-light-indigo";
-    //     let themeElement = document.getElementById("theme-css");
-    //     if (!themeElement) {
-    //         themeElement = document.createElement("link");
-    //         themeElement.id = "theme-css";
-    //         document.head.appendChild(themeElement);
-    //     }
-    //     themeElement.setAttribute("rel", "stylesheet");
-    //     themeElement.setAttribute("data-theme", layoutState.theme);
-    //     themeElement.setAttribute("href", `/themes/${newTheme}/theme.css`);
-    // }, [layoutState.theme]);
 
     const value: LayoutContextProps = {
         layoutState,

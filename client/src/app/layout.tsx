@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../styles/globals.scss";
 import Providers from "../layout/providers";
 import Head from "next/head";
+import RuntimeConfigLoader from "@/layout/RuntimeConfig";
 
 export const metadata: Metadata = {
   title: 'Demo App',
@@ -25,6 +26,7 @@ export default function RootLayout({
           <link id="theme-link" rel="stylesheet" href="/theme/lara-dark-green/theme.css"></link>
           <link id="theme-ref" rel="stylesheet" href="/themes/primeone-dark.css"></link>
         </Head>
+        <RuntimeConfigLoader />
         <Providers>{children}</Providers>
       </body>
     </html>

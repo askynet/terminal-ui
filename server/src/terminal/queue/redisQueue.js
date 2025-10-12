@@ -12,6 +12,7 @@ const sshQueue = new Queue("ssh-jobs", {
 
 // Enqueue ssh connect job. job options set TTL to hard limit (30min default)
 async function enqueueSSHJob(payload, opts = {}) {
+  // sshQueue.clean(0, 1000, 'failed');
   const defaultOpts = {
     removeOnComplete: true,
     removeOnFail: true,

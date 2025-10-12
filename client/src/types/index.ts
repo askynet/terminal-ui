@@ -144,7 +144,6 @@ export type AppContextType = {
     setScroll: (loading: boolean) => void;
     theme: any,
     setTheme: (theme: any) => void;
-    permissions: any[]
 };
 
 export interface Routes {
