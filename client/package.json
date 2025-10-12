@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "axios": "^1.11.0",
     "http-proxy-middleware": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -28,9 +30,7 @@
     "saas": "^1.0.0",
     "sass": "^1.90.0",
     "socket.io-client": "^4.8.1",
-    "uuid": "^11.1.0",
-    "xterm": "^5.3.0",
-    "xterm-addon-fit": "^0.8.0"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

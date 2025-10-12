@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Terminal } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
-import "xterm/css/xterm.css";
+import { Terminal } from '@xterm/xterm';
+import { FitAddon } from "@xterm/addon-fit";
+import "@xterm/xterm/css/xterm.css";
 import { v4 as uuidv4 } from "uuid";
 import { getSocket } from "@/config/socket";
 import { User } from "@/types";
@@ -12,10 +12,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
+import { xTermDarkTheme, xTermLightTheme } from "./xterm-theme";
 
 const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean, user?: User }) => {
   const { theme } = useAppContext();
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<any>(null);
   const termInstance = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sessionIdRef = useRef<string>(uuidv4());
@@ -54,10 +55,11 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
   useEffect(() => {
     if (!termInstance.current && terminalRef.current) {
       const term = new Terminal({
-        theme: { background: theme === 'light' ? '#f9fafb' : "#111827", foreground: "#00e08f" },
+        // theme: xTermLightTheme,
         fontSize: 15,
         allowProposedApi: true,
         cursorBlink: true,
+        cursorStyle: 'bar'
       });
       const fitAddon = new FitAddon();
       term.loadAddon(fitAddon);
@@ -148,7 +150,7 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
 
   useEffect(() => {
     if (termInstance && termInstance.current && termInstance.current.options) {
-      termInstance.current.options.theme = { background: theme === 'light' ? '#f9fafb' : "#111827", foreground: "#00e08f" };
+      termInstance.current.options.theme = theme === 'light' ? xTermLightTheme : xTermDarkTheme;
     }
   }, [theme])
 

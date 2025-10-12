@@ -6,7 +6,6 @@ import AppPage from '@/layout/AppPage';
 import { useAppContext } from '@/layout/AppWrapper';
 import { RootState } from '@/redux/store';
 import { TabItem } from '@/redux/slices/tabSlice';
-import DesktopOnlyOverlay from '@/components/DesktopOnlyOverlay';
 
 const TerminalPage = () => {
     const { setScroll } = useAppContext();
@@ -18,9 +17,6 @@ const TerminalPage = () => {
             setScroll(true)
         }
     }, [])
-
-
-    console.log('focusedTab', focusedTab, tabs)
 
     return <AppPage isLogo={true} full={true} containerClass='p-0'>
         {

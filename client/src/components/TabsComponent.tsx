@@ -34,7 +34,7 @@ export default function TabsComponent() {
             tabs.map((tab: TabItem, index: any) => <div
                 key={`tabs${index}${tab.tabId}`}
                 className={`flex align-items-center cursor-pointer border-round p-2 transition-all animation-duration-100`}
-                style={{ backgroundColor: tab.tabId == focusedTab ? (theme == 'dark' ? '#1a3635' : 'var(--surface-300)') : 'var(--surface-200)', color: tab.tabId == focusedTab ? (theme == 'dark' ? 'var(--primary-color)':'') : undefined, width: tab.tabId == focusedTab ? '18vw' : '16vw' }}
+                style={{ backgroundColor: tab.tabId == focusedTab ? (theme == 'dark' ? '#1a3635' : 'var(--surface-300)') : 'var(--surface-200)', color: tab.tabId == focusedTab ? (theme == 'dark' ? 'var(--primary-color)' : '') : undefined, width: tab.tabId == focusedTab ? '18vw' : '16vw' }}
                 onMouseEnter={() => setHoveredTab(tab.tabId)}
                 onMouseLeave={() => setHoveredTab(null)}
                 onClick={() => setFocus(tab.tabId)}
@@ -44,9 +44,9 @@ export default function TabsComponent() {
                     onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        if (index != 0) {
-                            deleteTab(tab.tabId)
-                        }
+                        // if (index != 0) {
+                        deleteTab(tab.tabId)
+                        // }
                     }}
                 ></i>
                 {tab.title}
