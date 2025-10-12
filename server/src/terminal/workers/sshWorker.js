@@ -11,21 +11,18 @@ const rootDir = process.cwd();
 const filePath = path.join(rootDir, 'keys/id_rsa.pem');
 
 const pub = getRedis().redisPub;
+const redisConfig = getRedis().options;
 
 const IDLE_TIMEOUT_MS = Number(process.env.SSH_IDLE_TIMEOUT_MS || 10 * 60 * 1000);
 
-// Session registry
-const sessions = {}; // sessionId -> { conn, stream, idleTimer, commandBuffer }
+// --- Session registry ---
+const sessions = {}; // sessionId -> { conn, stream, idleTimer, jobId }
+const commandBuffers = {}; // per-session input buffer
 
-const commandBuffers = {}; // optional per-session command buffer
-
-// Create global Redis subscribers
-const redisHost = process.env.REDIS_HOST;
-const redisPort = Number(process.env.REDIS_PORT || 6379);
-
-const inputSub = new Redis({ host: redisHost, port: redisPort });
-const resizeSub = new Redis({ host: redisHost, port: redisPort });
-const controlSub = new Redis({ host: redisHost, port: redisPort });
+// --- Redis Subscribers ---
+const inputSub = new Redis(redisConfig);
+const resizeSub = new Redis(redisConfig);
+const controlSub = new Redis(redisConfig);
 
 // Subscribe to all session channels
 (async () => {
@@ -34,7 +31,7 @@ const controlSub = new Redis({ host: redisHost, port: redisPort });
     await controlSub.psubscribe("ssh-control.*");
 })();
 
-// Message routing
+// --- Input routing ---
 inputSub.on("pmessage", (pattern, channel, message) => {
     const sessionId = channel.split(".")[1];
     const sess = sessions[sessionId];
@@ -65,6 +62,7 @@ inputSub.on("pmessage", (pattern, channel, message) => {
     resetIdleTimer(sessionId);
 });
 
+// --- Resize routing ---
 resizeSub.on("pmessage", (pattern, channel, message) => {
     const sessionId = channel.split(".")[1];
     const sess = sessions[sessionId];
@@ -76,6 +74,7 @@ resizeSub.on("pmessage", (pattern, channel, message) => {
     } catch (e) { }
 });
 
+// --- Control routing ---
 controlSub.on("pmessage", (pattern, channel, message) => {
     const sessionId = channel.split(".")[1];
     const sess = sessions[sessionId];
@@ -84,13 +83,14 @@ controlSub.on("pmessage", (pattern, channel, message) => {
     try {
         const ctl = JSON.parse(message);
         if (ctl.action === "disconnect") {
+            if (sess.conn) sess.conn.end();
             pub.publish(`ssh-event.${sessionId}`, JSON.stringify({ sessionId, type: "ssh-close", reason: "client requested disconnect" }));
             cleanup(sessionId);
         }
     } catch (e) { }
 });
 
-// Cleanup session
+// --- Cleanup session ---
 function cleanup(sessionId) {
     const sess = sessions[sessionId];
     if (!sess) return;
@@ -105,7 +105,7 @@ function cleanup(sessionId) {
     console.log(`Session ${sessionId} cleaned up`);
 }
 
-// Idle timer
+// --- Idle timer ---
 function resetIdleTimer(sessionId) {
     const sess = sessions[sessionId];
     if (!sess) return;
@@ -118,7 +118,7 @@ function resetIdleTimer(sessionId) {
     }, IDLE_TIMEOUT_MS);
 }
 
-// Start SSH worker
+// --- Start SSH Worker ---
 function startSSHWorkers() {
     const worker = new Worker(
         "ssh-jobs",
@@ -138,14 +138,14 @@ function startSSHWorkers() {
                 return;
             }
 
-            const { username } = decrypted;
-
+            const { username, password } = decrypted;
             const conn = new Client();
-
-            sessions[sessionId] = { conn: null, stream: null, idleTimer: null };
 
             return new Promise((resolve, reject) => {
                 conn.on("ready", () => {
+                    console.log('connection is ready');
+                    // assign session AFTER ready
+                    sessions[sessionId] = { conn, stream: null, idleTimer: null, jobId: job.id };
                     pub.publish(`ssh-event.${sessionId}`, JSON.stringify({ sessionId, type: "ssh-ready" }));
 
                     conn.shell({ term: term || "xterm-256color", cols: cols || 80, rows: rows || 24 }, (err, stream) => {
@@ -156,7 +156,6 @@ function startSSHWorkers() {
                         }
 
                         const sess = sessions[sessionId];
-                        sess.conn = conn;
                         sess.stream = stream;
 
                         stream.on("data", (chunk) => {
@@ -180,20 +179,20 @@ function startSSHWorkers() {
                     })
                     .connect({
                         host: process.env.SSH_HOST || "",
-                        port: process.env.SSH_PORT || 22,
-                        username: process.env.SSH_USER,
+                        port: Number(process.env.SSH_PORT || 22),
+                        username: 'ubuntu',
                         privateKey: readFileSync(filePath, "utf-8"),
                         readyTimeout: 20000,
                     });
             });
         },
         {
-            connection: { host: redisHost, port: redisPort },
+            connection: redisConfig,
             concurrency: Number(process.env.WORKER_CONCURRENCY || 5),
             lockDuration: 15 * 60 * 1000,
             maxStalledCount: 5,
             removeOnFail: { count: 0 },
-            removeOnComplete: { age: 3600, count: 100 }
+            removeOnComplete: { age: 3600, count: 100 },
         }
     );
 
@@ -202,7 +201,8 @@ function startSSHWorkers() {
         if (sessionId) cleanup(sessionId);
     });
 
-    worker.on("failed", (job) => {
+    worker.on("failed", (job, err) => {
+        console.log("Worker failed:", job.data.sessionId, err?.message);
         const sessionId = job.data.sessionId;
         if (sessionId) cleanup(sessionId);
     });
