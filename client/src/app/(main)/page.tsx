@@ -19,6 +19,9 @@ const TerminalPage = () => {
         }
     }, [])
 
+
+    console.log('focusedTab', focusedTab, tabs)
+
     return <AppPage isLogo={true} full={true} containerClass='p-0'>
         {
             tabs.map((tab: TabItem, index: any) => <TerminalWindow
@@ -28,6 +31,19 @@ const TerminalPage = () => {
             />
             )
         }
+        {/* Placeholder if no tab selected */}
+        {focusedTab === null && (
+            <div
+                style={{
+                    padding: "2rem",
+                    textAlign: "center",
+                    color: "#666",
+                    fontStyle: "italic",
+                }}
+            >
+                Please select a tab to view content.
+            </div>
+        )}
     </AppPage>
 }
 export default TerminalPage;

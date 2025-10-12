@@ -39,8 +39,8 @@ const tabSlice = createSlice({
         removeTab(state, action: PayloadAction<any>) {
             const tabIndex = state.tabs.findIndex(tab => tab.tabId == action.payload);
             // If the removed tab was focused, reset focus
-            if (state.focusedTab === (tabIndex + 1)) {
-                state.focusedTab = tabIndex;
+            if (state.focusedTab === state.tabs[tabIndex].tabId && tabIndex > 0) {
+                state.focusedTab = state.tabs[tabIndex - 1].tabId;
             }
             state.tabs = state.tabs.filter(tab => tab.tabId !== action.payload);
 

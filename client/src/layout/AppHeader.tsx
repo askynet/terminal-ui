@@ -1,19 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Avatar } from 'primereact/avatar';
-import { Menu } from 'primereact/menu';
+import React, {  } from 'react';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useAppContext } from './AppWrapper';
-import { get } from 'lodash';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { useLayoutContext } from './LayoutWrapper';
 import { usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { getDisplayName } from '../utils/utils';
 import Link from 'next/link';
-import { TabPanel, TabView } from 'primereact/tabview';
-import { InputText } from 'primereact/inputtext';
 import TabsComponent from '@/components/TabsComponent';
 
 interface AppHeaderProps {
@@ -22,24 +14,8 @@ interface AppHeaderProps {
     isLogo?: boolean
 }
 
-const useParentRoute = () => {
-    const pathname = usePathname();
-    const getParentPath = (path: any) => {
-        const segments = path.split('/').filter(Boolean);
-        if (segments.length <= 1) return `/${segments[0] || ''}`;
-        return `${segments[0]}`;
-    };
-    const parentPath = getParentPath(pathname).replace(/\//, '');
-    const parentTitle = parentPath.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    return {
-        parentTitle,
-        parentPath: `/${parentPath}`
-    };
-};
-
 const AppHeader = (props: AppHeaderProps) => {
-    const { user } = useSelector((state: RootState) => state.auth);
-    const { setAlert, signOut, theme, setTheme } = useAppContext();
+    const { signOut, theme, setTheme } = useAppContext();
     const { layoutState } = useLayoutContext();
 
     const confirmLogout = () => {

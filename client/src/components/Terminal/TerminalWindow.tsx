@@ -11,6 +11,7 @@ import { useAppContext } from "@/layout/AppWrapper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Button } from "primereact/button";
+import { Message } from "primereact/message";
 
 const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean, user?: User }) => {
   const { theme } = useAppContext();
@@ -72,6 +73,11 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
       fitAddonRef.current = fitAddon;
 
       handleReconnect();
+
+      socket.current.on("connect_error", (err) => {
+        console.log("WebSocket connection failed:", err.message);
+        hasSocketConnectedRef.current = false;
+      });
 
       socket.current.on("ssh-ready", ({ sessionId }) => {
         if (sessionId === sessionIdRef.current) {
@@ -157,6 +163,7 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
   useEffect(() => {
     const s = socket.current;
     s.on("disconnect", () => {
+      console.log('socker disonnect')
       if (termInstance.current) {
         termInstance.current.writeln("\r\n[Disconnected from server, trying to reconnect...]\r\n");
         hasSocketConnectedRef.current = false;
@@ -176,6 +183,16 @@ const TerminalWindow = ({ id, isActive, user }: { id: string; isActive: boolean,
 
   return <div style={{ visibility: isActive ? 'visible' : 'hidden', height: isActive ? '100vh' : 0, padding: isActive ? 10 : 0 }}>
     <div key={`terminal${id}`} ref={terminalRef} style={{ height: "90vh" }} />
+    {
+      !hasSocketConnectedRef.current && <div className="card flex justify-content-center" style={{
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: '1rem'
+      }}>
+        <Message severity="error" text="Server disconnected" />
+      </div>
+    }
     {
       hasSocketConnectedRef.current && !hasSSHConnectedRef.current && <Button
         onClick={() => handleReconnect()}
