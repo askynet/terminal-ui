@@ -46,6 +46,13 @@ function checkSocketConnections() {
             console.log(`⚠️ Session ${sessionId} has no active connection`);
         } else if (sess.idleTimer && sess.idleTimer._idleStart + sess.idleTimer._idleTimeout < now) {
             console.log(`⚠️ Session ${sessionId} is idle for too long, cleaning up`, sess.idleTimer);
+            const sessionStartMs = sess.idleTimer._idleStart;
+            const elapsedMs = now - sessionStartMs;
+            const elapsedMins = Math.floor(elapsedMs / 60000);
+
+            console.log(`Session started at: ${new Date(Date.now() - elapsedMs).toLocaleTimeString()}`);
+            console.log(`Elapsed time: ${elapsedMins} minute(s)`);
+
             // cleanup session
             // if (sess.stream) sess.stream.end();
             // if (sess.conn) sess.conn.end();

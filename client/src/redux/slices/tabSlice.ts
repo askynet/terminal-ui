@@ -12,12 +12,7 @@ interface TabState {
 
 const initialState: TabState = {
     focusedTab: null,
-    tabs: [
-        {
-            tabId: 'default',
-            title: 'New Tab',
-        }
-    ]
+    tabs: []
 };
 
 const tabSlice = createSlice({
@@ -28,10 +23,7 @@ const tabSlice = createSlice({
             state.tabs = action.payload;
         },
         clearTabs(state) {
-            state.tabs = [{
-                tabId: 'default',
-                title: 'New Tab'
-            }];
+            state.tabs = [];
         },
         addTab(state, action: PayloadAction<TabItem>) {
             state.tabs.push(action.payload);

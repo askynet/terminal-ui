@@ -54,7 +54,7 @@ export default function TabsComponent() {
                 onClick={() => setFocus(tab.tabId)}
             >
                 <i
-                    className={`pi ${hoveredTab === tab.tabId && index != 0 ? "pi-times" : "pi-plus"} mr-2`}
+                    className={`pi ${hoveredTab === tab.tabId ? "pi-times" : "pi-plus"} mr-2`}
                     onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
