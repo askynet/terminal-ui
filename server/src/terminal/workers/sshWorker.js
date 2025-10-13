@@ -6,6 +6,7 @@ const { decryptJson } = require("../terminal.controller");
 const { isRestricted } = require("../../utils/common");
 const path = require("path");
 const Redis = require("ioredis");
+const { keys } = require("lodash");
 
 const rootDir = process.cwd();
 const filePath = path.join(rootDir, 'keys/id_rsa.pem');
@@ -125,6 +126,8 @@ function startSSHWorkers() {
         async (job) => {
             if (job.name !== "ssh-connect") return;
 
+            console.log('SSH connect requested:', job.data.sessionId);
+
             const { sessionId, cols, rows, term, sshToken } = job.data;
 
             if (!sshToken) {
@@ -146,10 +149,12 @@ function startSSHWorkers() {
                     console.log('connection is ready');
                     // assign session AFTER ready
                     sessions[sessionId] = { conn, stream: null, idleTimer: null, jobId: job.id };
+                    console.log('sessions', keys(sessions))
                     pub.publish(`ssh-event.${sessionId}`, JSON.stringify({ sessionId, type: "ssh-ready" }));
 
                     conn.shell({ term: term || "xterm-256color", cols: cols || 80, rows: rows || 24 }, (err, stream) => {
                         if (err) {
+                            console.log('shel connection error');
                             pub.publish(`ssh-event.${sessionId}`, JSON.stringify({ sessionId, type: "ssh-error", error: err.message }));
                             cleanup(sessionId);
                             return reject(err);
@@ -173,6 +178,7 @@ function startSSHWorkers() {
                     });
                 })
                     .on("error", (err) => {
+                        console.log('connection error', err)
                         pub.publish(`ssh-event.${sessionId}`, JSON.stringify({ sessionId, type: "ssh-error", error: err.message }));
                         cleanup(sessionId);
                         reject(err);
@@ -212,4 +218,4 @@ function startSSHWorkers() {
     console.log("SSH Worker started");
 }
 
-module.exports = { startSSHWorkers };
+module.exports = { startSSHWorkers, sessions };

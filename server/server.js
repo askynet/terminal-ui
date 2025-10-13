@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const { startSSHWorkers } = require('./src/terminal/workers/sshWorker');
 const { subscribeOutputs } = require('./src/terminal/subscribers/subscribeOutputs');
 const { registerSocketHandlers } = require('./src/terminal/socket/socketHandler');
+const { monitorLoop } = require('./src/terminal/monitor/monitor');
 
 global.__rootDir = __dirname;
 
@@ -31,6 +32,7 @@ io.on("connection", (socket) => registerSocketHandlers(socket));
 // Start Redis subscriber
 startSSHWorkers();
 subscribeOutputs();
+monitorLoop();
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`🚀 Backend running on ${PORT}`));

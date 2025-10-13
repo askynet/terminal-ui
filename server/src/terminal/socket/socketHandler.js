@@ -14,7 +14,7 @@ const registerSocketHandlers = (socket) => {
         await bindSocket(sessionId, socket);
 
         // enqueue job for worker
-        await enqueueSSHJob({
+        const job = await enqueueSSHJob({
             sessionId,
             socketId: socket.id,
             cols,
@@ -22,6 +22,7 @@ const registerSocketHandlers = (socket) => {
             term,
             sshToken,
         });
+        console.log('SSH job enqueued', job?.id);
 
         // reply quickly
         socket.emit("queued", { sessionId });
@@ -39,6 +40,7 @@ const registerSocketHandlers = (socket) => {
 
     // Disconnect request
     socket.on("ssh-disconnect", async ({ sessionId }) => {
+        console.log('SSH disconnect request', sessionId);
         pub.publish(`ssh-control.${sessionId}`, JSON.stringify({ action: "disconnect" }));
     });
 

@@ -15,7 +15,7 @@ const initialState: TabState = {
     tabs: [
         {
             tabId: 'default',
-            title: 'New Tab'
+            title: 'New Tab',
         }
     ]
 };

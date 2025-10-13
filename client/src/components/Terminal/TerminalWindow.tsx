@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Button } from "primereact/button";
 import { xTermDarkTheme, xTermLightTheme } from "./xterm-theme";
+import { io, Socket } from "socket.io-client";
 
 const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => {
   const { theme } = useAppContext();
@@ -18,14 +19,14 @@ const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => 
   const termInstance = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sessionIdRef = useRef<string>(uuidv4());
-  const socket = useRef(getSocket());
+  const socketRef = useRef<Socket | null>(null);
   const { passwordToken } = useSelector((state: RootState) => state.auth);
 
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [isSSHConnected, setIsSSHConnected] = useState(false);
 
   const emitMessage = (eventName: string, payload = {}) => {
-    socket.current.emit(eventName, {
+    socketRef?.current?.emit(eventName, {
       sessionId: sessionIdRef.current,
       sshToken: passwordToken,
       ...payload,
@@ -43,6 +44,7 @@ const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => 
 
     // Delay a bit before reconnecting
     setTimeout(() => {
+      console.log('sessionIdRef.current', sessionIdRef.current, socketRef?.current?.id)
       emitMessage("ssh-connect", {
         cols: termInstance.current?.cols,
         rows: termInstance.current?.rows,
@@ -80,52 +82,57 @@ const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => 
     };
     window.addEventListener("resize", handleResize);
 
-    const s = socket.current;
-
     // Trigger SSH connect even if socket already connected
-    if (s.connected) {
-      connectSSH();
-    } else {
-      s.once("connect", () => {
-        setIsSocketConnected(true);
-        connectSSH();
-      });
-    }
-
-    // Socket events
-    s.on("connect", () => {
-      console.log("[Socket] connected");
-      setIsSocketConnected(true);
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "", {
+      transports: ["websocket"],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 2000,
+      reconnectionDelayMax: 5000,
+      timeout: 10000,
+      forceNew: true
     });
 
-    s.on("disconnect", () => {
+    socketRef.current = socket;
+
+    // Socket events
+    socket.on("connect", () => {
+      console.log("[Socket] connected");
+      setIsSocketConnected(true);
+      if (!isSSHConnected) {
+        connectSSH();
+      }
+    });
+
+    socket.on("disconnect", () => {
       console.log("[Socket] disconnected");
       setIsSocketConnected(false);
       setIsSSHConnected(false);
       term.writeln("\r\n[Disconnected from server. Trying to reconnect...]\r\n");
     });
 
-    s.on("connect_error", (err) => {
+    socket.on("connect_error", (err) => {
       console.log("WebSocket connection failed:", err.message);
       setIsSocketConnected(false);
     });
 
-    s.on("ssh-ready", ({ sessionId }) => {
+    socket.on("ssh-ready", ({ sessionId }) => {
       if (sessionId === sessionIdRef.current) {
         setIsSSHConnected(true);
         term.writeln("Connection established.\r\n");
       }
     });
 
-    s.on("ssh-data", ({ sessionId, data }) => {
+    socket.on("ssh-data", ({ sessionId, data }) => {
       if (sessionId === sessionIdRef.current) term.write(data);
     });
 
-    s.on("ssh-error", ({ sessionId, error }) => {
+    socket.on("ssh-error", ({ sessionId, error }) => {
       if (sessionId === sessionIdRef.current) term.writeln(`\r\n[ERROR] ${error}\r\n`);
     });
 
-    s.on("ssh-timeout", ({ sessionId }) => {
+    socket.on("ssh-timeout", ({ sessionId }) => {
       if (sessionId === sessionIdRef.current) {
         term.writeln("\r\n[Session timed out]\r\n");
         setIsSSHConnected(false);
@@ -133,7 +140,7 @@ const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => 
       }
     });
 
-    s.on("ssh-close", ({ sessionId }) => {
+    socket.on("ssh-close", ({ sessionId }) => {
       if (sessionId === sessionIdRef.current) {
         term.writeln("\r\n[Connection closed]\r\n");
         setIsSSHConnected(false);
@@ -145,15 +152,16 @@ const TerminalWindow = ({ id, isActive }: { id: string; isActive: boolean }) => 
 
     return () => {
       console.log('tab unmount', id);
+      emitMessage("ssh-disconnect", { sessionId: sessionIdRef.current });
       window.removeEventListener("resize", handleResize);
-      s.off("connect");
-      s.off("disconnect");
-      s.off("connect_error");
-      s.off("ssh-ready");
-      s.off("ssh-data");
-      s.off("ssh-error");
-      s.off("ssh-timeout");
-      s.off("ssh-close");
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("connect_error");
+      socket.off("ssh-ready");
+      socket.off("ssh-data");
+      socket.off("ssh-error");
+      socket.off("ssh-timeout");
+      socket.off("ssh-close");
       term.dispose();
     };
   }, []);

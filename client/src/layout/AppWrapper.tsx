@@ -21,23 +21,18 @@ const defaultContext: AppContextType = {
 };
 const AppContext = createContext(defaultContext);
 
-
 const LIGHT = "/themes/lara-light-green/theme.css";
 const DARK = "/themes/lara-dark-green/theme.css";
-
 
 export const AppWrapper = React.memo(({ children }: any) => {
     const [isLoading, setLoading] = useState(false);
     const [isScroll, setScroll] = useState(false);
     const [theme, setTheme] = useState<any>(localStorage.getItem('pr-theme-mode') || 'dark');
 
-
     const toastRef = useRef<any>(null);
-
 
     const dispatch = useDispatch<AppDispatch>();
     const { passwordToken } = useSelector((state: RootState) => state.auth);
-
 
     useEffect(() => {
         localStorage.setItem(CONFIG.AUTH_USER_TOKEN, passwordToken)

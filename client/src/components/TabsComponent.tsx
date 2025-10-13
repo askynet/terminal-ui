@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { addTab, focusTab, removeTab, TabItem } from '@/redux/slices/tabSlice';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppContext } from '@/layout/AppWrapper';
+import { confirmDialog } from 'primereact/confirmdialog';
 
 export default function TabsComponent() {
     const { theme } = useAppContext();
@@ -19,6 +20,19 @@ export default function TabsComponent() {
             title: "New Terminal"
         }))
         dispatch(focusTab(newTabId))
+    }
+
+    const confirmDelete = (tabId: any) => {
+        confirmDialog({
+            className: 'confirm-dialog',
+            message: `Do you want to close current tab connection?`,
+            header: "Confirmation",
+            icon: "pi pi-exclamation-triangle text-red",
+            position: 'top',
+            accept: () => {
+                deleteTab(tabId)
+            },
+        });
     }
 
     const deleteTab = (tabId: any) => {
@@ -45,7 +59,7 @@ export default function TabsComponent() {
                         e.stopPropagation();
                         e.preventDefault();
                         // if (index != 0) {
-                        deleteTab(tab.tabId)
+                            confirmDelete(tab.tabId)
                         // }
                     }}
                 ></i>

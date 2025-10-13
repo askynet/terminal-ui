@@ -19,7 +19,7 @@ async function enqueueSSHJob(payload, opts = {}) {
     // ttl in ms (hard limit) - default 30 minutes
     ttl: (process.env.SSH_JOB_TTL_MS && parseInt(process.env.SSH_JOB_TTL_MS)) || 30 * 60 * 1000,
   };
-  await sshQueue.add("ssh-connect", payload, Object.assign(defaultOpts, opts));
+  return await sshQueue.add("ssh-connect", payload, Object.assign(defaultOpts, opts));
 }
 
 module.exports = { sshQueue, enqueueSSHJob, connection };

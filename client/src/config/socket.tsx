@@ -23,7 +23,7 @@ export const getSocket = (): Socket => {
     });
 
     socket.on("disconnect", (reason) => {
-      console.warn("⚠️ Socket disconnected:", reason);
+      // console.warn("⚠️ Socket disconnected:", reason);
       // Automatically reconnect
       if (reason !== "io client disconnect") {
         reconnectSocket();
@@ -31,7 +31,7 @@ export const getSocket = (): Socket => {
     });
 
     socket.on("connect_error", (err) => {
-      console.error("❌ Socket connection error:", err.message);
+      // console.error("❌ Socket connection error:", err.message);
       reconnectSocket();
     });
   }
@@ -41,7 +41,7 @@ export const getSocket = (): Socket => {
 
 function reconnectSocket() {
   if (!socket) return;
-  console.log("🔁 Trying to reconnect...");
+  // console.log("🔁 Trying to reconnect...");
   if (!socket.connected) {
     setTimeout(() => {
       socket?.connect();
@@ -51,7 +51,7 @@ function reconnectSocket() {
 
 export const closeSocket = () => {
   if (socket) {
-    console.log("🛑 Closing socket connection");
+    // console.log("🛑 Closing socket connection");
     socket.disconnect();
     socket = null;
   }
